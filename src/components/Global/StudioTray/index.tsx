@@ -9,7 +9,6 @@ const StudioTray = () => {
     const [onTimer, setOnTimer] = useState<string>("00:00:00");
     const [count, setCount] = useState<number>(0);
     const [recording, setRecording] = useState(false);
-    const [stream, setStream] = useState<MediaStream | null>(null);
 
     const [onSources, setOnSources] = useState<
         | {
@@ -91,7 +90,7 @@ const StudioTray = () => {
                     />) : (
                         <Square
                             size={26}
-                            className="non-draggabled cursor-pointer hover:scale-110 transition duration-150"
+                            className="non-draggable cursor-pointer hover:scale-110 transition duration-150"
                             onClick={() => {
                                 setRecording(false)
                                 clearTime()

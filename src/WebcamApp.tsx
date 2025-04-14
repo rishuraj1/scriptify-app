@@ -1,8 +1,8 @@
-import './App.css';
+import WebCam from './components/Global/WebCam';
 
 function WebcamApp() {
     return (
-        <h1>Webcam Component</h1>
+        <WebCam />
     )
 }
 
