@@ -193,6 +193,16 @@ button:focus-visible {
   user-select: none;
 }
 
+.draggable select,
+.draggable input,
+.draggable button,
+.draggable textarea {
+  --webkit-app-region: no-drag;
+  -webkit-app-region: no-drag;
+  -webkit-user-select: auto;
+  user-select: auto;
+}
+
 .non-draggable {
   --webkit-app-region: no-drag;
   -webkit-app-region: no-drag;

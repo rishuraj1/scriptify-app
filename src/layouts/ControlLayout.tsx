@@ -38,11 +38,8 @@ const ControlLayout = ({
             <div className="flex-1 h-0 overflow-auto">
                 {children}
             </div>
-            <div className="p-5 flex w-full">
-                <div className="flex items-center gap-x-2">
-                    <img src={appLogo} alt="Scriptify App Logo" />
-                    <p className="text-white text-2xl">Scriptify</p>
-                </div>
+            <div className="flex items-center gap-x-2 p-2">
+                <img src={appLogo} alt="Scriptify App Logo" className="w-36 h-14" />
             </div>
         </div>
     )

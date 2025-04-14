@@ -10,18 +10,21 @@ const Widget = () => {
     const [profile, setProfile] = useState<Profile>(null)
     const { user } = useUser()
 
-    console.log("user", user)
+    // console.log("user", user)
 
     const { state, fetchMediaResources } = useMediaSources()
-    console.log("state", state)
+    // console.log("state", state)
 
     useEffect(() => {
-        console.log("user", user)
+        fetchMediaResources()
+    }, [])
+
+    useEffect(() => {
+        // console.log("user", user)
         if (user && user.primaryEmailAddress?.emailAddress) {
             fetchUserProfile(user?.primaryEmailAddress?.emailAddress).then(p => setProfile(p))
         }
     }, [user])
-
     return (
         <div className="p-5">
             <ClerkLoading>
@@ -32,8 +35,13 @@ const Widget = () => {
             <SignedIn>
                 {profile ? (
                     <MediaConfiguration
-                      state={state}
-                      user={profile?.user} 
+                        state={{
+                            displays: state.displays || [],
+                            audioInputs: state.audioInputs || [],
+                            error: state.error || null,
+                            isPending: state.isPending || false
+                        }}
+                        user={profile}
                     />
                 ) : (
                     <div className="w-full h-full flex justify-center items-center">
