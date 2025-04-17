@@ -78,31 +78,31 @@ function createWindow() {
     },
   });
 
-  floatingWebCam = new BrowserWindow({
-    width: 150,
-    height: 150,
-    minHeight: 150,
-    minWidth: 150,
-    maxWidth: 150,
-    frame: false,
-    transparent: true,
-    alwaysOnTop: true,
-    focusable: false,
-    icon: path.join(process.env.VITE_PUBLIC, "electron-vite.svg"),
-    webPreferences: {
-      nodeIntegration: false,
-      contextIsolation: true,
-      devTools: true,
-      preload: path.join(__dirname, "preload.mjs"),
-    },
-  });
+  // floatingWebCam = new BrowserWindow({
+  //   width: 150,
+  //   height: 150,
+  //   minHeight: 150,
+  //   minWidth: 150,
+  //   maxWidth: 150,
+  //   frame: false,
+  //   transparent: true,
+  //   alwaysOnTop: true,
+  //   focusable: false,
+  //   icon: path.join(process.env.VITE_PUBLIC, "electron-vite.svg"),
+  //   webPreferences: {
+  //     nodeIntegration: false,
+  //     contextIsolation: true,
+  //     devTools: true,
+  //     preload: path.join(__dirname, "preload.mjs"),
+  //   },
+  // });
 
   win.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true });
   win.setAlwaysOnTop(true, "screen-saver", 1);
   studio.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true });
   studio.setAlwaysOnTop(true, "screen-saver", 1);
-  floatingWebCam.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true });
-  floatingWebCam.setAlwaysOnTop(true, "screen-saver", 1);
+  // floatingWebCam.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true });
+  // floatingWebCam.setAlwaysOnTop(true, "screen-saver", 1);
 
   // Test active push message to Renderer-process.
   win.webContents.on("did-finish-load", () => {
@@ -119,12 +119,12 @@ function createWindow() {
   if (VITE_DEV_SERVER_URL) {
     win.loadURL(VITE_DEV_SERVER_URL);
     studio.loadURL(`${import.meta.env.VITE_APP_URL}/studio.html`);
-    floatingWebCam.loadURL(`${import.meta.env.VITE_APP_URL}/webcam.html`);
+    // floatingWebCam.loadURL(`${import.meta.env.VITE_APP_URL}/webcam.html`);
   } else {
     // win.loadFile('dist/index.html')
     win.loadFile(path.join(RENDERER_DIST, "index.html"));
     studio.loadFile(path.join(RENDERER_DIST, "studio.html"));
-    floatingWebCam.loadFile(path.join(RENDERER_DIST, "webcam.html"));
+    // floatingWebCam.loadFile(path.join(RENDERER_DIST, "webcam.html"));
   }
 }
 
