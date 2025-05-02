@@ -4,10 +4,22 @@ import { v4 as uuid } from "uuid";
 import io from "socket.io-client";
 
 const socket = io(import.meta.env.VITE_SOCKET_URL as string);
+const transcriptionSocket = new WebSocket(
+  "ws://localhost:8000/realtime-transcribe"
+);
 
 let videoTransferFileName: string | undefined;
 let mediaRecorder: MediaRecorder | undefined;
 let userId: string | undefined;
+let transcriptionRecorder: MediaRecorder | undefined;
+
+transcriptionSocket.onopen = () => {
+  console.log("WebSocket connection established");
+};
+
+transcriptionSocket.onerror = (err) => {
+  console.error("❌ Transcription WebSocket error:", err);
+};
 
 export const StartRecording = (onSources: {
   screen: string;
@@ -17,6 +29,7 @@ export const StartRecording = (onSources: {
   hidePluginWindow(true);
   videoTransferFileName = `${uuid()}-${onSources.id.slice(0, 8)}.webm`;
   mediaRecorder?.start(1000);
+  transcriptionRecorder?.start(1000);
 };
 
 export const onStopRecording = () => {
@@ -28,6 +41,7 @@ const stopRecording = () => {
     filename: videoTransferFileName,
     userId,
   });
+  transcriptionRecorder?.stop();
 };
 
 export const onDataAvailable = (event: BlobEvent) => {
@@ -36,6 +50,17 @@ export const onDataAvailable = (event: BlobEvent) => {
     chunks: event.data,
     filename: videoTransferFileName,
   });
+};
+
+export const onTranscriptionDataAvailable = (event: BlobEvent) => {
+  if (event.data && event.data.size > 0 && transcriptionSocket?.readyState === WebSocket.OPEN) {
+    console.log("📤 Sending audio blob of size:", event.data.size);
+    transcriptionSocket.send(event.data);
+  } else {
+    console.warn("⚠️ Empty blob or socket not open");
+    console.log("Transcription Socket readyState:", transcriptionSocket?.readyState);
+    console.log("Transcription Socket URL:", transcriptionSocket?.url);
+  }
 };
 
 export const selectSources = async (
@@ -51,7 +76,12 @@ export const selectSources = async (
     if (onSources.screen && onSources.audio && onSources.id) {
       console.log("selectSources called with:", onSources);
       const constraints: any = {
-        audio: false,
+        audio: {
+          mandatory: {
+            chromeMediaSource: "desktop",
+            chromeMediaSourceId: onSources?.screen,
+          },
+        },
         video: {
           mandatory: {
             chromeMediaSource: "desktop",
@@ -74,7 +104,7 @@ export const selectSources = async (
       });
 
       if (!stream || !stream.getVideoTracks().length) {
-        throw new Error('Failed to get video stream');
+        throw new Error("Failed to get video stream");
       }
 
       if (videoElement && videoElement.current) {
@@ -90,11 +120,17 @@ export const selectSources = async (
       try {
         mediaRecorder = new MediaRecorder(combinedStream, {
           mimeType: "video/webm; codecs=vp9",
-          videoBitsPerSecond: onSources.preset === "HD" ? 2500000 : 1500000
+          videoBitsPerSecond: onSources.preset === "HD" ? 2500000 : 1500000,
+        });
+        transcriptionRecorder = new MediaRecorder(combinedStream, {
+          mimeType: "audio/webm; codecs=opus",
         });
         console.log("mediaRecorder created successfully");
+        console.log("transcriptionRecorder created successfully");
         mediaRecorder.ondataavailable = onDataAvailable;
         mediaRecorder.onstop = stopRecording;
+        transcriptionRecorder.ondataavailable = onTranscriptionDataAvailable;
+        transcriptionRecorder.onstop = stopRecording;
       } catch (recorderError) {
         console.error("Error creating MediaRecorder:", recorderError);
         throw recorderError;
