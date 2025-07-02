@@ -26,7 +26,7 @@ process.env.VITE_PUBLIC = VITE_DEV_SERVER_URL
 
 let win: BrowserWindow | null;
 let studio: BrowserWindow | null;
-let floatingWebCam: BrowserWindow | null;
+// let floatingWebCam: BrowserWindow | null;
 
 function createWindow() {
   // Request screen capture permissions
@@ -38,12 +38,12 @@ function createWindow() {
     height: 600,
     minHeight: 600,
     minWidth: 300,
-    // frame: false,
-    // transparent: true,
-    // alwaysOnTop: true,
-    // focusable: false,
-    // backgroundColor: "#00000000",
-    // icon: path.join(process.env.VITE_PUBLIC, "electron-vite.svg"),
+      frame: false,
+      transparent: true,
+      alwaysOnTop: true,
+      focusable: false,
+    backgroundColor: "#00000000",
+    icon: path.join(process.env.VITE_PUBLIC, "electron-vite.svg"),
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
@@ -65,7 +65,7 @@ function createWindow() {
     maxHeight: 400,
     minWidth: 300,
     maxWidth: 400,
-    // frame: false,
+    // frame: false,                  uncomment to remove the frame
     // transparent: true,
     // alwaysOnTop: true,
     // focusable: false,

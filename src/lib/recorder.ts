@@ -5,7 +5,7 @@ import io from "socket.io-client";
 
 const socket = io(import.meta.env.VITE_SOCKET_URL as string);
 const transcriptionSocket = new WebSocket(
-  "ws://localhost:8000/realtime-transcribe"
+  "ws://127.0.0.1:8000/realtime-transcribe"
 );
 
 let videoTransferFileName: string | undefined;
@@ -122,15 +122,15 @@ export const selectSources = async (
           mimeType: "video/webm; codecs=vp9",
           videoBitsPerSecond: onSources.preset === "HD" ? 2500000 : 1500000,
         });
-        transcriptionRecorder = new MediaRecorder(combinedStream, {
+        transcriptionRecorder = new MediaRecorder(audioStream, {
           mimeType: "audio/webm; codecs=opus",
+          audioBitsPerSecond: 128000
         });
         console.log("mediaRecorder created successfully");
         console.log("transcriptionRecorder created successfully");
         mediaRecorder.ondataavailable = onDataAvailable;
         mediaRecorder.onstop = stopRecording;
         transcriptionRecorder.ondataavailable = onTranscriptionDataAvailable;
-        transcriptionRecorder.onstop = stopRecording;
       } catch (recorderError) {
         console.error("Error creating MediaRecorder:", recorderError);
         throw recorderError;
